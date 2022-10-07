@@ -7,6 +7,6 @@
         public int UserProfileId { get; set; }
         public UserProfile UserProfile { get; set; }
         public int VideoId { get; set; }
-        public Video Video { get; set; }
+       
     }
 }

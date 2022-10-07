@@ -27,9 +27,10 @@ namespace Streamish.Repositories
                        up.ImageUrl AS UserProfileImageUrl,
                         
                        c.Id AS CommentId, c.Message, c.UserProfileId AS CommentUserProfileId
-                  FROM UserProfile up 
-                       JOIN Video v ON v.UserProfileId = up.Id
-                       LEFT JOIN Comment c on c.VideoId = v.id
+                  
+                     FROM UserProfile up 
+                     JOIN Video v ON v.UserProfileId = up.Id
+                     LEFT JOIN Comment c on c.VideoId = v.id
                   Where up.Id = @Id 
              ORDER BY  v.DateCreated
             ";
@@ -45,6 +46,8 @@ namespace Streamish.Repositories
                          
                             var videoId = DbUtils.GetInt(reader, "VideoId");
       
+                            List<Video> videos = new List<Video>();
+                            List<Comment> comments = new List<Comment>();
 
                             if (userProfile == null)
                             {
@@ -55,14 +58,13 @@ namespace Streamish.Repositories
                                     Email = DbUtils.GetString(reader, "Email"),
                                     DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
                                     ImageUrl = DbUtils.GetString(reader, "UserProfileImageUrl"),
-                                    Videos = new List<Video>()
+                                    Videos = videos
                                 };
                             }
-                            List<Video> videos = new List<Video>();
-                            List<Comment> comments = new List<Comment>();
                             if (DbUtils.IsNotDbNull(reader, "VideoId"))
                             {
-                                userProfile.Videos.Add( new Video()
+                                
+                                userProfile.Videos.Add(new Video()
                                 {
                                     Id = videoId,
                                     Title = DbUtils.GetString(reader, "Title"),
@@ -70,10 +72,10 @@ namespace Streamish.Repositories
                                     DateCreated = DbUtils.GetDateTime(reader, "VideoDateCreated"),
                                     Url = DbUtils.GetString(reader, "Url"),
                                     UserProfileId = DbUtils.GetInt(reader, "VideoUserProfileId"),
-                                    UserProfile = new UserProfile(),
                                     Comments = comments
                                 });
-                            {
+                                { 
+                             
                                     if (DbUtils.IsNotDbNull(reader, "CommentId"))
                                     comments.Add(new Comment()
                                 {
